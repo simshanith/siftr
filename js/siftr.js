@@ -28,11 +28,42 @@ sim.siftr.getPhotosByBlogAndList = function(tumblog, sourceList) {
     goog.dom.getElementsByClass(sourceList)]);
 };
 
-/* TODO: refine data structure */
-tumblrData = new Array();
-
 /* custom event management */
 var et = new goog.events.EventTarget;
+
+tumblrData = new Array();
+
+/* manipulates tumblrData structure. 1 object in the array per blog. 
+   dispatches MORE_POSTS event to load more photos
+   returns modified object. */
+sim.siftr.updateTumblrData = function(tumblogName, sourceList, start, reply) {
+  var ourTumblog;
+
+  if(!goog.array.some(tumblrData, function(ele, i, arr) {
+    return ele.tumblog == tumblogName;})) {
+    ourTumblog ={"tumblog"    : reply.tumblelog.name,
+                 "sourceList" : sourceList,
+                 "tumblrObj"  : reply,
+                 "postCount"  : reply["posts-total"],
+                 "lastStart"  : start}; 
+    tumblrData.push(ourTumblog);
+    }else{
+      ourTumblog = goog.array.find(tumblrData, function(ele) {
+        return ele.tumblog == tumblogName;});
+      goog.array.extend(ourTumblog.tumblrObj.posts, reply.posts);
+      ourTumblog.postCount = reply["posts-total"];
+      ourTumblog.lastStart = start;
+    }
+
+  if(ourTumblog.postCount - 50 > ourTumblog.nextStart) {
+    et.dispatchEvent({type : "MORE_POSTS",
+                      "tumblog"    : tumblogName,
+                      "sourceList" : sourceList,
+                      "lastStart"  : start});
+  }
+
+  return ourTumblog;
+}
 
 /* gets tumblr data and handles it */
 sim.siftr.getTumblrData = function(tumblog, sourceList, start) {
@@ -41,13 +72,14 @@ sim.siftr.getTumblrData = function(tumblog, sourceList, start) {
      adds response to tumblrData data structure &
      dispatches JSONP_LOADED event */
   function handleTumblr_(reply) {
-    tumblrData.push({"tumblog" : reply.tumblelog.name,
-                     "sourceList" : sourceList,
-                     "tumblrObj" : reply});
+    var updatedTumblr = sim.siftr.updateTumblrData(tumblog, sourceList, start, reply);
+
     et.dispatchEvent({type: "JSONP_LOADED",
-                      "tumblog" : reply.tumblelog.name,
-                      "sourceList" : sourceList,
-                      "tumblrObj" : reply});
+                      "tumblog"    : updatedTumblr["tumblog"],
+                      "sourceList" : updatedTumblr["sourceList"],
+                      "tumblrObj"  : updatedTumblr["tumblrObj"],
+                      "postCount"  : updatedTumblr["postCount"],
+                      "lastStart"  : updatedTumblr["lastStart"]});
   }
   
   var tumblrEndpoint = "http://"+tumblog+".tumblr.com/api/read/json";
@@ -58,6 +90,11 @@ sim.siftr.getTumblrData = function(tumblog, sourceList, start) {
              handleTumblr_);
 };
 
+/*listens for more posts to be loaded, and calls getTumblrData.
+  yay recursion!*/
+et.addEventListener("MORE_POSTS", function(e) {
+  sim.siftr.getTumblrData(e.tumblog, e.sourceList, e.lastStart + 50);
+});
 
 /* returns function to be used in a goog.array.forEach loop
    with given tumblog and sourcelist
@@ -129,4 +166,4 @@ et.addEventListener("PHOTOS_LOADED", sim.siftr.updateDlg);
 
 
 /* start it all off with my tumblr */
-sim.siftr.getTumblrData("simloovoo", "customList1", 0);
+sim.siftr.getTumblrData("simloovoo", "activeList", 0);
