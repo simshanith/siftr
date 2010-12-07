@@ -64,3 +64,9 @@ margin: 20px 0 auto auto;}
 border: solid black 2px;
  }
 .sourceList > li {width: 375px;}
+
+input.label-input-label {
+   color: GrayText;
+   font-style: italic;
+   text-align: right;
+}
