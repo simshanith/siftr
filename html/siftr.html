@@ -7,11 +7,12 @@
   <title>simThinker</title>
   <link rel="stylesheet" type="text/css" href="../css/reset.css" />
   <link rel="stylesheet" type="text/css" href="../css/siftr.css" />
-  <!--( for online leeching off of google's servers ;) -->
+  <!--( for online leeching off of google's servers ;)
   <script src="http://closure-library.googlecode.com/svn/trunk/closure/goog/base.js"></script>
-  <!-- for local testing
-  <script src="/path/to/closure-library/closure/goog/base.js"></script>
   -->
+  <!-- for local testing -->
+  <script src="../js/closure-library/closure/goog/base.js"></script>
+
   <script>
     goog.provide('sim.siftr');
     goog.provide('sim.array');
@@ -32,14 +33,15 @@
     <h2>play with your photos</h2>
   </div>
   <div id="app-container">
-    <!--TODO: implement this stuff
     <div id="sourceControls">
-      <ul class="sourceList" id="customList1">
-        <h4>siftr default: my blog</h4>
-        <li><span>simloovoo</span><button>Get more posts</button></li>
+      <ul class="sourceList" id="activeList">
+        <li><input type="text" name="switchTumblr" id="switchTumblr" />
+          <button id="tumblrSwitch">switch source</button></li>
+        <!-- this should be added programmatically
+        <li><a href="#activeList:simloovoo" id="activeList:simloovoo">simloovoo</a></li>
+        -->
       </ul>
     </div>
-    -->
     <div class="list-container" id="entrance"><ul id="natural"></ul></div>
     <div class="list-container" id="viewport"><ul id="view"></ul></div>
     <!-- TODO: allow for arbitrary creation of categories -->
