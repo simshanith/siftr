@@ -24,6 +24,7 @@
     goog.require('goog.events.EventTarget');
     goog.require('goog.fx.DragListGroup');
     goog.require('goog.fx.DragListDirection');
+    goog.require('goog.ui.LabelInput');
   </script>
   <script src="../js/siftr.js"></script>
 </head>
@@ -39,6 +40,10 @@
                    name="switchTumblr" id="switchTumblr"
                    label="&lt;blogname&gt;"/>.tumblr.com
           <button id="tumblrSwitch">switch source</button></li>
+        <script type="text/javascript">
+          var labeledInput = new goog.ui.LabelInput();
+          labeledInput.decorate(goog.dom.getElement("switchTumblr"));
+        </script>
         <!-- this should be added programmatically
         <li><a href="#activeList:simloovoo" id="activeList:simloovoo">simloovoo</a></li>
         -->
@@ -51,3 +56,4 @@
     <div class="list-container category"><ul id="category2"></ul></div>
   </div>
 </body>
+</html>
