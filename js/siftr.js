@@ -55,7 +55,7 @@ sim.siftr.updateTumblrData = function(tumblogName, sourceList, start, reply) {
       ourTumblog.lastStart = start;
     }
 
-  if(ourTumblog.postCount - 50 > ourTumblog.nextStart) {
+  if(ourTumblog.postCount - 50 > start) {
     et.dispatchEvent({type : "MORE_POSTS",
                       "tumblog"    : tumblogName,
                       "sourceList" : sourceList,
