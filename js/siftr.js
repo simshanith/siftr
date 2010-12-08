@@ -140,7 +140,7 @@ sim.siftr.addPhotoFrom = function(tumblog, sourceList) {
 /* adds photos to the DOM &
    dispatches PHOTOS_LOADED event */
 et.addEventListener("JSONP_LOADED", function(e){
-  goog.array.forEach(e.tumblrObj.posts,
+  goog.array.forEach(goog.array.slice(e.tumblrObj.posts, e.lastStart),
                      sim.siftr.addPhotoFrom(e.tumblog, e.sourceList));
   et.dispatchEvent({type: "PHOTOS_LOADED"});
 });
