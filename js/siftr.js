@@ -1,3 +1,4 @@
+var $ = goog.dom.getElement;
 /* sim.array utility functions */
 sim.array.intersect = function(arrOfArrs) {
   var shortestArr = sim.array.first(arrOfArrs);
@@ -31,7 +32,7 @@ sim.siftr.getPhotosByBlogAndList = function(tumblog, sourceList) {
 /* custom event management */
 var et = new goog.events.EventTarget;
 
-tumblrData = new Array();
+tumblrData = [];
 
 /* manipulates tumblrData structure. 1 object in the array per blog. 
    dispatches MORE_POSTS event to load more photos
@@ -39,7 +40,7 @@ tumblrData = new Array();
 sim.siftr.updateTumblrData = function(tumblogName, sourceList, start, reply) {
   var ourTumblog;
 
-  if(!goog.array.some(tumblrData, function(ele, i, arr) {
+  if(!goog.array.some(tumblrData, function(ele) {
     return ele.tumblog == tumblogName;})) {
     ourTumblog ={"tumblog"    : reply.tumblelog.name,
                  "sourceList" : sourceList,
@@ -55,13 +56,6 @@ sim.siftr.updateTumblrData = function(tumblogName, sourceList, start, reply) {
       ourTumblog.lastStart = start;
     }
 
-  if(ourTumblog.postCount - 50 > start) {
-    et.dispatchEvent({type : "MORE_POSTS",
-                      "tumblog"    : tumblogName,
-                      "sourceList" : sourceList,
-                      "lastStart"  : start});
-  }
-
   return ourTumblog;
 }
 
@@ -75,11 +69,11 @@ sim.siftr.getTumblrData = function(tumblog, sourceList, start) {
     var updatedTumblr = sim.siftr.updateTumblrData(tumblog, sourceList, start, reply);
 
     et.dispatchEvent({type: "JSONP_LOADED",
-                      "tumblog"    : updatedTumblr["tumblog"],
-                      "sourceList" : updatedTumblr["sourceList"],
-                      "tumblrObj"  : updatedTumblr["tumblrObj"],
-                      "postCount"  : updatedTumblr["postCount"],
-                      "lastStart"  : updatedTumblr["lastStart"]});
+                            "tumblog"    : updatedTumblr.tumblog,
+                            "sourceList" : updatedTumblr.sourceList,
+                            "tumblrObj"  : updatedTumblr.tumblrObj,
+                            "postCount"  : updatedTumblr.postCount,
+                            "lastStart"  : updatedTumblr.lastStart});
   }
   
   var tumblrEndpoint = "http://"+tumblog+".tumblr.com/api/read/json";
@@ -87,7 +81,8 @@ sim.siftr.getTumblrData = function(tumblog, sourceList, start) {
   jsonp.send({"type" : "photo",
               "num" : 50,
               "start" : start},
-             handleTumblr_);
+             handleTumblr_, function() {//handleError
+             }, "cacheplz");
 };
 
 /*listens for more posts to be loaded, and calls getTumblrData.
@@ -142,7 +137,20 @@ sim.siftr.addPhotoFrom = function(tumblog, sourceList) {
 et.addEventListener("JSONP_LOADED", function(e){
   goog.array.forEach(goog.array.slice(e.tumblrObj.posts, e.lastStart),
                      sim.siftr.addPhotoFrom(e.tumblog, e.sourceList));
-  et.dispatchEvent({type: "PHOTOS_LOADED"});
+
+  if(e.postCount - 50 > e.lastStart) {
+    et.dispatchEvent({type : "MORE_POSTS",
+                      "tumblog"    : e.tumblog,
+                      "sourceList" : e.sourceList,
+                      "lastStart"  : e.lastStart});
+  }
+
+  et.dispatchEvent({type: "PHOTOS_LOADED",
+                    "tumblog"   : e.tumblog,
+                    "souceList" : e.sourceList,
+                    "tumblrObj" : e.tumblrObj,
+                    "lastStart" : e.lastStart,
+                    "postCount" : e.postCount});
 });
 
 /* our DragListGroup variable */
@@ -167,3 +175,23 @@ et.addEventListener("PHOTOS_LOADED", sim.siftr.updateDlg);
 
 /* start it all off with my tumblr */
 sim.siftr.getTumblrData("simloovoo", "activeList", 0);
+
+/* ui stuff; may have to be refactored out 
+sim.siftr.switchTumblr = function(e) {
+  var iTumblr = goog.dom.forms.getValue($("switchTumblr")) || "simloovoo";
+  var findTumblr = goog.array.find(tumblrData, function(ele) {return ele.tumblog == iTumblr});
+  goog.array.forEach(getElementsByClass("activeList"), goog.dom.removeNode);
+  if(findTumblr == null) {
+
+    sim.siftr.getTumblrData(newTumblr, "activeList", 0);
+  }else{
+    et.dispatchEvent({type: "JSONP_LOADED",
+                      "tumblog"    : findTumblr.tumblog,
+                      "sourceList" : findTumblr.sourceList,
+                      "postCount"  : findTumblr.postCount,
+                      "tumblrObj"  : findTumblr.tumblrObj,
+                      "lastStart"  : findTumblr.lastStart});}
+};
+
+goog.events.listen($("tumblrSwitch"), goog.events.EventType.CLICK, sim.siftr.switchTumblr)
+*/

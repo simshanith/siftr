@@ -22,6 +22,7 @@
     goog.require('goog.array');
     goog.require('goog.events');
     goog.require('goog.events.EventTarget');
+    goog.require('goog.events.EventType');
     goog.require('goog.fx.DragListGroup');
     goog.require('goog.fx.DragListDirection');
     goog.require('goog.ui.LabelInput');
@@ -39,7 +40,7 @@
         <li><input type="text"
                    name="switchTumblr" id="switchTumblr"
                    label="&lt;blogname&gt;"/>.tumblr.com
-          <button id="tumblrSwitch">switch source</button></li>
+          <button id="tumblrSwitch">load photos</button></li>
         <script type="text/javascript">
           var labeledInput = new goog.ui.LabelInput();
           labeledInput.decorate(goog.dom.getElement("switchTumblr"));
