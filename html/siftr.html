@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <title>simThinker</title>
+  <link rel="stylesheet" type="text/css" href="../css/reset.css" />
+  <link rel="stylesheet" type="text/css" href="../css/siftr.css" />
+  <!--( for online leeching off of google's servers ;)
+  <script src="http://closure-library.googlecode.com/svn/trunk/closure/goog/base.js"></script>
+  -->
+  <!-- for local testing -->
+  <script src="../js/closure-library/closure/goog/base.js"></script>
+
+  <script>
+    goog.provide('sim.siftr');
+    goog.provide('sim.array');
+
+    goog.require('goog.net.Jsonp');
+    goog.require('goog.dom');
+    goog.require('goog.array');
+    goog.require('goog.events');
+    goog.require('goog.events.EventTarget');
+    goog.require('goog.events.EventType');
+    goog.require('goog.fx.DragListGroup');
+    goog.require('goog.fx.DragListDirection');
+    goog.require('goog.ui.LabelInput');
+  </script>
+  <script src="../js/siftr.js"></script>
+</head>
+<body>
+  <div class="headings">
+    <h1>simSiftr</h1>
+    <h2>play with your photos</h2>
+  </div>
+  <div id="app-container">
+    <div id="sourceControls">
+      <ul class="sourceList" id="activeList">
+        <li><input type="text"
+                   name="switchTumblr" id="switchTumblr"
+                   label="&lt;blogname&gt;"/>.tumblr.com
+          <button id="tumblrSwitch">load photos</button></li>
+        <script type="text/javascript">
+          var labeledInput = new goog.ui.LabelInput();
+          labeledInput.decorate(goog.dom.getElement("switchTumblr"));
+          /* ui stuff; may have to be refactored out */
+          sim.siftr.switchTumblr = function(e) {
+            input = labeledInput.getValue();
+            var iTumblr = (input == "")? "simloovoo":input;
+            var findTumblr = goog.array.find(tumblrData, function(ele) {return ele.tumblog == iTumblr});
+            goog.array.forEach(goog.dom.getElementsByClass("activeList"), goog.dom.removeNode);
+            
+            if(findTumblr == null) {
+              sim.siftr.getTumblrData(iTumblr, "activeList", 0);
+            }else{
+              et.dispatchEvent({type: "JSONP_LOADED",
+                                "tumblog"    : findTumblr.tumblog,
+                                "sourceList" : findTumblr.sourceList,
+                                "postCount"  : findTumblr.postCount,
+                                "tumblrObj"  : findTumblr.tumblrObj,
+                                "lastStart"  : findTumblr.lastStart,
+                                "paintStart" : 0});}
+          };
+
+          goog.events.listen($("tumblrSwitch"), goog.events.EventType.CLICK, sim.siftr.switchTumblr);
+        </script>
+        <!-- this should be added programmatically
+        <li><a href="#activeList:simloovoo" id="activeList:simloovoo">simloovoo</a></li>
+        -->
+      </ul>
+    </div>
+    <div class="list-container" id="entrance"><ul id="natural"></ul></div>
+    <div class="list-container" id="viewport"><ul id="view"></ul></div>
+    <!-- TODO: allow for arbitrary creation of categories -->
+    <div class="list-container category"><ul id="category1"></ul></div>
+    <div class="list-container category"><ul id="category2"></ul></div>
+  </div>
+</body>
+</html>

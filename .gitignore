@@ -1,0 +1,5 @@
+#don't include google closure library
+/js/closure-library
+
+#don't include emacs backups
+*/#*#

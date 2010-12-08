@@ -1,0 +1,72 @@
+body {background: #56475E; font-family: Arial;}
+#app-container {
+width: auto;
+height: auto;
+position: relative;
+margin: 0 auto 40px;}
+
+#app-container > div {display:inline;}
+.list-container {
+background-color: #56475E;
+float: left;
+}
+.list-container > ul {
+background-color: #D4DEFF;
+margin: auto;
+overflow: hidden;
+}
+.list-container li {margin: auto 0; height: 75px; width: 75px;}
+.list-container > ul.dragHover {
+background-color: #56475E;}
+.dragging{height: auto; width: auto;}
+h1 {font-size: 2.5em; text-align: center;}
+h2 {font-size: 1em; text-align: center; font-style: italic;}
+
+.draggable {
+    margin: auto 0;
+    position: relative;
+    float: left;
+    z-index: 99;
+}
+
+.fullsize {display: none;}
+.draggable.dragging > img.thumbnail {display: none;}
+.draggable.dragging > img.fullsize {
+display: block;
+position: absolute; top: 0; left: 0;}
+
+#entrance {width: 415px; min-height: 960px;}
+#entrance > ul {width: 375px; min-height: 920px; margin: 20px auto;}
+
+.list-container.category {width: 715px; min-height: 95px; margin-right: 20px;}
+.list-container.category > ul {
+width: 675px;
+min-height: 75px;
+margin: 20px auto 0;}
+
+#viewport {min-width: 715px; min-height: 480px; margin-right: 20px;} 
+#viewport > ul {min-width: 675px; min-height: 440px; margin: 20px auto 0;}
+#viewport > ul.dragHover {width: 715px; height: 440px;}
+
+#viewport li {height: auto; width: auto; clear: left;}
+#viewport img.thumbnail {display: none;}
+#viewport img.fullsize {display: block;}
+
+
+
+#app-container > div#sourceControls {
+background-color: #D4DEFF;
+min-width: 375px;
+display:inline-block;
+margin: 20px 0 auto auto;}
+
+.sourceList {width: 375px;
+border: solid black 2px;
+ }
+.sourceList > li {width: 375px;}
+
+input.label-input-label {
+   color: GrayText;
+   font-style: italic;
+   text-align: right;
+}
