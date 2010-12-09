@@ -1,4 +1,5 @@
 body {background: #56475E; font-family: Arial;}
+ul {list-style: none;}
 #app-container {
 width: auto;
 height: auto;
