@@ -1,10 +1,10 @@
 CACHE MANIFEST
-#last pushed commit: 639c455ba16d15791549fc516942f906c235610c
-
-NETWORK:
-*
+#last pushed commit: 42d45cabb3fb765365fce837e6b21698b80bf85f
 
 CACHE:
 css/siftr.css
 css/reset.css
 #TODO: add compiled js
+
+NETWORK:
+*
