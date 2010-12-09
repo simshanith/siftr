@@ -1,5 +1,6 @@
 #don't include google closure library
 /js/closure-library
-
+#don't include dojo
+/js/dojo-toolkit
 #don't include emacs backups
 */#*#
