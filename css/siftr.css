@@ -37,17 +37,17 @@ h2 {font-size: 1em; text-align: center; font-style: italic;}
 display: block;
 position: absolute; top: 0; left: 0;}
 
-#entrance {width: 415px; min-height: 960px; margin-left: 0;}
+#app-container > div#entrance {width: 415px; min-height: 960px;}
 #entrance > ul {width: 375px; min-height: 920px; margin: 0 auto 20px;}
 
-.list-container.category {width: 715px; min-height: 95px; margin-right: 20px;}
+.list-container.category {width: 715px; min-height: 95px; margin: auto;}
 .list-container.category > ul {
 width: 675px;
 min-height: 75px;
 margin: 20px auto 0;}
 
-#categories {width: 715px;}
-#viewport {min-width: 715px; min-height: 480px;}
+#categories {min-width: 715px;}
+#viewport {min-width: 715px; min-height: 460px;}
 #viewport > ul {min-width: 675px; min-height: 440px; margin: 0 auto;}
 #viewport > ul.dragHover {width: 715px; height: 440px;}
 
