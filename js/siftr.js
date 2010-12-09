@@ -1,34 +1,6 @@
-var $ = goog.dom.getElement;
-/* sim.array utility functions */
-sim.array.intersect = function(arrOfArrs) {
-  var shortestArr = sim.array.first(arrOfArrs);
-  var restArrs = sim.array.rest(arrOfArrs);
-  return goog.array.filter(shortestArr, function(ele) {
-    return goog.array.every(restArrs, 
-                            function(restArr) {
-                              return goog.array.contains(restArr, ele);
-                            });
-  });
-};
-
-sim.array.first = function(arr) {
-  var arrClone = goog.array.clone(arr);
-  return arrClone.shift();
-}
-sim.array.rest = function(arr) {
-  var arrClone = goog.array.clone(arr);
-  arrClone.shift();
-  return arrClone;
-}
-
-/* returns array of DOM elements with both classes provided.
-   TODO: actually use it*/
-sim.siftr.getPhotosByBlogAndList = function(tumblog, sourceList) {
-  return sim.array.intersect([
-    goog.dom.getElementsByClass(tumblog), 
-    goog.dom.getElementsByClass(sourceList)]);
-};
-
+/* shorthand functions */
+var $ = goog.dom;
+var $$ = function(selector) {return $.query(selector, goog.global.document);}
 /* custom event management */
 var et = new goog.events.EventTarget;
 
@@ -37,7 +9,7 @@ tumblrData = [];
 /* manipulates tumblrData structure. 1 object in the array per blog. 
    dispatches MORE_POSTS event to load more photos
    returns modified object. */
-sim.siftr.updateTumblrData = function(tumblogName, sourceList, start, reply) {
+sim.siftr.updateTumblrData = function getTumblrData(tumblogName, sourceList, start, reply) {
   var ourTumblog;
 
   if(!goog.array.some(tumblrData, function(ele) {
@@ -60,7 +32,7 @@ sim.siftr.updateTumblrData = function(tumblogName, sourceList, start, reply) {
 }
 
 /* gets tumblr data and handles it */
-sim.siftr.getTumblrData = function(tumblog, sourceList, start) {
+sim.siftr.getTumblrData = function  getTumblrData(tumblog, sourceList, start) {
   
   /* called on successful JSONP request.
      adds response to tumblrData data structure &
@@ -95,9 +67,9 @@ et.addEventListener("MORE_POSTS", function(e) {
 /* returns function to be used in a goog.array.forEach loop
    with given tumblog and sourcelist
    enclosed in DOM classes and ids */
-sim.siftr.addPhotoFrom = function(tumblog, sourceList) {
-  var container = goog.dom.getElement("natural");
-
+sim.siftr.addPhotoFrom = function addPhotoFrom(tumblog, sourceList) {
+  var container = $$("#natural")[0];
+  
   /* goog.array.forEach() iterating function */
   return function(ele, i, arr) {
    
@@ -118,17 +90,17 @@ sim.siftr.addPhotoFrom = function(tumblog, sourceList) {
          offset property; single-photo posts don't. */
       var multiPhotoSlug = (elem.offset) ? elem.offset : "";
       
-      goog.dom.appendChild(container,
-                           goog.dom.createDom("li",
-                                              {"class" : tumblog + " draggable " +sourceList ,
-                                               "id" : ele.id + multiPhotoSlug + "-" + tumblog,
-                                              },
-                                              goog.dom.createDom("img", 
-                                                                 {"src" : elem["photo-url-75"],
-                                                                  "class" : "thumbnail"}),
-                                              goog.dom.createDom("img",
-                                                                 {"src" : elem["photo-url-1280"],
-                                                                  "class" : "fullsize"})));
+      $.appendChild(container,
+                    $.createDom("li",
+                                {"class" : tumblog + " draggable " +sourceList ,
+                                 "id" : ele.id + multiPhotoSlug + "-" + tumblog,
+                                },
+                                $.createDom("img", 
+                                            {"src" : elem["photo-url-75"],
+                                             "class" : "thumbnail"}),
+                                $.createDom("img",
+                                            {"src" : elem["photo-url-1280"],
+                                             "class" : "fullsize"})));
     }
   }
 };
@@ -138,14 +110,14 @@ sim.siftr.addPhotoFrom = function(tumblog, sourceList) {
 et.addEventListener("JSONP_LOADED", function(e){
   goog.array.forEach(goog.array.slice(e.tumblrObj.posts, e.paintStart),
                      sim.siftr.addPhotoFrom(e.tumblog, e.sourceList));
-
+  
   if(e.postCount - 50 > e.lastStart) {
     et.dispatchEvent({type : "MORE_POSTS",
                       "tumblog"    : e.tumblog,
                       "sourceList" : e.sourceList,
                       "lastStart"  : e.lastStart});
   }
-
+  
   et.dispatchEvent({type: "PHOTOS_LOADED",
                     "tumblog"   : e.tumblog,
                     "souceList" : e.sourceList,
@@ -157,11 +129,11 @@ et.addEventListener("JSONP_LOADED", function(e){
 /* our DragListGroup variable */
 var dlg;
 
-sim.siftr.updateDlg = function(){
+sim.siftr.updateDlg = function updateDlg(){
   dlg = new goog.fx.DragListGroup();
-  listContainers = goog.dom.getElementsByClass("list-container");
+  listContainers = $$(".list-container");
   goog.array.forEach(listContainers, function(ele, i, arr) {
-       dlg.addDragList(goog.dom.getFirstElementChild(ele),
+       dlg.addDragList($.getFirstElementChild(ele),
                        goog.fx.DragListDirection.RIGHT_2D, true, "dragHover");
   });
   

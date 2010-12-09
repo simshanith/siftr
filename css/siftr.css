@@ -5,10 +5,12 @@ height: auto;
 position: relative;
 margin: 0 auto 40px;}
 
-#app-container > div {display:inline;}
+#app-container > div {
+display:inline; float: left;
+margin-left: 20px;}
+}
 .list-container {
 background-color: #56475E;
-float: left;
 }
 .list-container > ul {
 background-color: #D4DEFF;
@@ -35,8 +37,8 @@ h2 {font-size: 1em; text-align: center; font-style: italic;}
 display: block;
 position: absolute; top: 0; left: 0;}
 
-#entrance {width: 415px; min-height: 960px;}
-#entrance > ul {width: 375px; min-height: 920px; margin: 20px auto;}
+#entrance {width: 415px; min-height: 960px; margin-left: 0;}
+#entrance > ul {width: 375px; min-height: 920px; margin: 0 auto 20px;}
 
 .list-container.category {width: 715px; min-height: 95px; margin-right: 20px;}
 .list-container.category > ul {
@@ -44,8 +46,9 @@ width: 675px;
 min-height: 75px;
 margin: 20px auto 0;}
 
-#viewport {min-width: 715px; min-height: 480px; margin-right: 20px;} 
-#viewport > ul {min-width: 675px; min-height: 440px; margin: 20px auto 0;}
+#categories {width: 715px;}
+#viewport {min-width: 715px; min-height: 480px;}
+#viewport > ul {min-width: 675px; min-height: 440px; margin: 0 auto;}
 #viewport > ul.dragHover {width: 715px; height: 440px;}
 
 #viewport li {height: auto; width: auto; clear: left;}
@@ -56,14 +59,12 @@ margin: 20px auto 0;}
 
 #app-container > div#sourceControls {
 background-color: #D4DEFF;
-min-width: 375px;
+width: 415px;
 display:inline-block;
-margin: 20px 0 auto auto;}
-
-.sourceList {width: 375px;
+float: none;
 border: solid black 2px;
- }
-.sourceList > li {width: 375px;}
+margin-bottom: 20px;
+}
 
 input.label-input-label {
    color: GrayText;
