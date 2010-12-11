@@ -6,29 +6,13 @@ var et = new goog.events.EventTarget;
 
 tumblrData = [];
 
-/* manipulates tumblrData structure. 1 object in the array per blog. 
-   dispatches MORE_POSTS event to load more photos
-   returns modified object. */
-sim.siftr.updateTumblrData = function getTumblrData(tumblogName, sourceList, start, reply) {
+sim.siftr.findTumblrData = function findTumblrData(tumblogName) {
   var ourTumblog;
-
-  if(!goog.array.some(tumblrData, function(ele) {
-    return ele.tumblog == tumblogName;})) {
-    ourTumblog ={"tumblog"    : reply.tumblelog.name,
-                 "sourceList" : sourceList,
-                 "tumblrObj"  : reply,
-                 "postCount"  : reply["posts-total"],
-                 "lastStart"  : start}; 
-    tumblrData.push(ourTumblog);
-    }else{
-      ourTumblog = goog.array.find(tumblrData, function(ele) {
-        return ele.tumblog == tumblogName;});
-      goog.array.extend(ourTumblog.tumblrObj.posts, reply.posts);
-      ourTumblog.postCount = reply["posts-total"];
-      ourTumblog.lastStart = start;
-    }
-
-  return ourTumblog;
+  function _matchName(ele) {return ele.tumblog == tumblogName}
+  if(!goog.array.some(tumblrData, _matchName))
+    return null;
+  else
+    return goog.array.find(tumblrData, _matchName);
 }
 
 /* gets tumblr data and handles it */
@@ -38,15 +22,31 @@ sim.siftr.getTumblrData = function  getTumblrData(tumblog, sourceList, start) {
      adds response to tumblrData data structure &
      dispatches JSONP_LOADED event */
   function handleTumblr_(reply) {
-    var updatedTumblr = sim.siftr.updateTumblrData(tumblog, sourceList, start, reply);
+    var ourTumblr = sim.siftr.findTumblrData(tumblog);
 
+    if(!ourTumblr) {
+      ourTumblr = {"tumblog"    : tumblog,
+                   "sourceList" : sourceList,
+                   "tumblrObj"  : reply,
+                   "postCount"  : reply["posts-total"],
+                   "lastStart"  : start,
+                   "paintStart" : start};
+      tumblrData.push(ourTumblr);
+    } else {
+      goog.array.extend(ourTumblr.tumblrObj.posts, reply.posts);
+      ourTumblr["sourceList"] = sourceList;
+      ourTumblr.postCount = reply["posts-total"];
+      ourTumblr.lastStart = start;
+      ourTumblr.paintStart = start;
+    }
+    
     et.dispatchEvent({type: "JSONP_LOADED",
-                      "tumblog"    : updatedTumblr.tumblog,
-                      "sourceList" : updatedTumblr.sourceList,
-                      "tumblrObj"  : updatedTumblr.tumblrObj,
-                      "postCount"  : updatedTumblr.postCount,
-                      "lastStart"  : updatedTumblr.lastStart,
-                      "paintStart" : updatedTumblr.lastStart});
+                      "tumblog"    : ourTumblr["tumblog"],
+                      "sourceList" : ourTumblr.sourceList,
+                      "tumblrObj"  : ourTumblr.tumblrObj,
+                      "postCount"  : ourTumblr.postCount,
+                      "lastStart"  : ourTumblr.lastStart,
+                      "paintStart" : ourTumblr.lastStart});
   }
   
   var tumblrEndpoint = "http://"+tumblog+".tumblr.com/api/read/json";
