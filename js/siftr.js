@@ -1,6 +1,6 @@
 /*
 ////////////// /array utils\\\\\\\\\\\\\\\\\\\\
-   Mostly ported from Google Closure Library,
+ported from Google Closure Library,
    goog.array.js
 
 */
