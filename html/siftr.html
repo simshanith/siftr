@@ -5,14 +5,12 @@
   <title>simThinker</title>
   <link rel="stylesheet" href="../css/reset.css" />
   <link rel="stylesheet" href="../css/siftr.css" />
-  <!--( for online leeching off of google's servers ;)
-  <script src="http://closure-library.googlecode.com/svn/trunk/closure/goog/base.js"></script>
-  <script src="http://closure-library.googlecode.com/svn/trunk/third_party/closure/goog/deps.js"></script>  
-  -->
-  <!-- for local testing -->
-  <script src="../js/closure-library/closure/goog/base.js"></script>
-  <script src="../js/closure-library/third_party/closure/goog/deps.js"></script>
+  <!--( for online leeching off of google's servers ;)  -->
+  <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js" type="text/javascript"></script>
 
+  <!-- for local testing
+  <script src="../js/dojo-toolkit/dojo/dojo.js"></script>
+ -->
   <script src="../js/requirements.js"></script>
   <script src="../js/siftr.js"></script>
 </head>
@@ -26,10 +24,11 @@
   <div id="app-container">
     <div id="sourceControls">
       <ul class="sourceList" id="activeList">
-        <li><input type="text"
-                   name="switchTumblr" id="switchTumblr"
-                   label="&lt;blogname&gt;"/>.tumblr.com
-          <button id="tumblrSwitch">load photos</button></li>
+        <li><form id="switchTumblr">
+            <input type="text"
+                   name="tumblrSwitch" id="tumblrSwitch" 
+                   placeholder="&lt;blogname&gt;"/>.tumblr.com
+            <input type="submit" value="load photos"/></form></li>
         <script src="../js/siftr-ui.js"></script>
         <!-- this should be added programmatically
         <li><a href="#activeList:simloovoo" id="activeList:simloovoo">simloovoo</a></li>

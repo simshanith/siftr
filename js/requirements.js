@@ -1,13 +1,14 @@
-goog.provide('sim.siftr');
-goog.provide('sim.array');
+dojo.provide('sim.siftr');
+dojo.provide('sim.array');
 
-goog.require('goog.net.Jsonp');
-goog.require('goog.dom');
-goog.require('goog.dom.query');
-goog.require('goog.array');
-goog.require('goog.events');
-goog.require('goog.events.EventTarget');
-goog.require('goog.events.EventType');
-goog.require('goog.fx.DragListGroup');
-goog.require('goog.fx.DragListDirection');
-goog.require('goog.ui.LabelInput');
+/*jsonp*/
+dojo.require('dojo.io.script');
+
+/*drag and drop*/
+dojo.require("dojo.dnd.autoscroll");
+dojo.require("dojo.dnd.Container");
+dojo.require("dojo.dnd.Selector");
+dojo.require("dojo.dnd.Source");
+dojo.require("dojo.dnd.Avatar");
+dojo.require("dojo.dnd.Manager");
+dojo.require("dojo.dnd.Source");
