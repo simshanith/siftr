@@ -49,20 +49,25 @@ sim.array.find = function(arr, f, opt_obj) {
   var i = sim.array.findIndex(arr, f, opt_obj);
   return i < 0 ? null : dojo.isString(arr) ? arr.charAt(i) : arr[i];
 };
+
+sim.array.get = function(arrOfObjs, property, value) {
+  function _matcher(ele) {return ele[property] === value}
+
+  if(!dojo.some(arrOfObjs, _matcher))
+    return null;
+  else
+    return sim.array.find(arrOfObjs, _matcher);
+}
 //////////////////////main application code\\\\\\\\\\\\\\\\\\\\\\\\
 
 var $  = dojo.byId;
 var $$ = dojo.query;
 var tumblrData = [];
 var et = [];
+var dlg = [];
 
 sim.siftr.findTumblrData = function findTumblrData(tumblogName) {
-  var ourTumblog;
-  function _matchName(ele){return ele.tumblog == tumblogName}
-  if(!dojo.some(tumblrData, _matchName)) 
-    return null;
-  else 
-    return sim.array.find(tumblrData, _matchName);
+  return sim.array.get(tumblrData, "tumblog", tumblogName);
 }
 
 sim.siftr.getTumblrData = function getTumblrData(tumblogName, sourceList, start) {
@@ -106,46 +111,70 @@ et.push(dojo.subscribe("MORE_POSTS", function(e) {
 
 sim.siftr.addPhotoFrom = function addPhotoFrom(tumblog, sourceList) {
   return function(post) {
-    if(post.photos.length)
-      dojo.forEach(post.photos, photoDom);
-    else photoDom(post);
+    
+    var dndData = [];
 
-    function photoDom(ele) {      
+    /*  items should have the form:
+    {uid       : postId + offset + "-" + tumblog,
+     classes   : sourceList + " " + tumblog,
+     thumbnail : photo-url-75,
+     fullsize  : photo-url-1280}
+    */
+
+    function _extractPhotoData(ele) {
       var multiPhotoSlug = (ele.offset)?ele.offset:"";
-      var listItem = dojo.create("li", 
-                                 {"class" : tumblog + " draggable " + sourceList + " dojo",
-                                  "id" : post.id + multiPhotoSlug + "-" + tumblog},
-                                 "natural");
-      dojo.create("img", {"src"   : ele["photo-url-75"],
-                          "class" : "thumbnail"}, listItem);
-      dojo.create("img", {"src"   : ele["photo-url-1280"],
-                          "class" : "fullsize"}, listItem);
+      var item = {uid       : post.id + multiPhotoSlug + "-" + tumblog,
+                  classes   : sourceList + " " + tumblog,
+                  thumbnail : ele["photo-url-75"],
+                  fullsize  : ele["photo-url-1280"]};
+      dndData.push(item);
     }
-  }
+
+
+    //multiple photos in one post need to be handled.
+    if(post.photos.length)
+      dojo.forEach(post.photos, _extractPhotoData);
+    else _extractPhotoData(post);
+
+    sim.array.get(dlg, "sourceId", "natural").dndSource.insertNodes(true, dndData);
+  }  
 };
 
+sim.siftr.photoItemCreator = function photoItemCreator(item, hint) {
+  var listItem = dojo.create("li", 
+                             {"class" : "draggable " + item.classes,
+                              "id" : item.uid});
+  dojo.create("img", {"src"   : item.thumbnail,
+                      "class" : "thumbnail"}, listItem);
+  dojo.create("img", {"src"   : item.fullsize,
+                      "class" : "fullsize"}, listItem);
+  
+  return {node : listItem, data: item, type: ["tumblrPhoto"]};
+};
 
 et.push(dojo.subscribe("JSONP_LOADED", function(e) {
   dojo.forEach(e.tumblrObj.posts.slice(e.paintStart), 
                sim.siftr.addPhotoFrom(e.tumblog, e.sourceList));
-
+  e.paintStart = e.lastStart + 50;
   if(e.postCount - 50 > e.lastStart)
     dojo.publish("MORE_POSTS", [e]);
 
-  dojo.publish("PHOTOS_LOADED", [e]);
 }));
 
-var dlg = [];
-$$(".list-container > ul").forEach(function(node) {
-  dlg.push(new dojo.dnd.AutoSource(node));});
-
-sim.siftr.updateDlg = function updateDlg() {
-//  dojo.forEach(dlg, function(source) {source.destroy()});
-
-};
-
-et.push(dojo.subscribe("PHOTOS_LOADED", sim.siftr.updateDlg));
-
 dojo.ready(function ready() {
+  $$(".list-container").forEach(function(node) {
+    var ourSource = new dojo.dnd.AutoSource(node,
+                                            {creator    : sim.siftr.photoItemCreator,
+                                             accept     : ["tumblrPhoto"],
+                                             copyOnly   : false,
+                                             copyState  : function() {return false;}, //never copy
+                                             dropParent : node.firstChild,
+                                             singular   : true,
+
+                                            });
+    dlg.push({sourceId  : node.firstChild.id,
+              dndSource :ourSource});
+  });
+
   sim.siftr.getTumblrData("simloovoo", "activeList", 0);
 });
