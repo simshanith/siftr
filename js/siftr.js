@@ -1,6 +1,13 @@
 /* shorthand functions */
 var $ = goog.dom;
 var $$ = function(selector) {return $.query(selector, goog.global.document);}
+
+/*utility: custom extend that returns object*/
+sim.extend = function extend(target, var_args) {
+  var clone = goog.object.clone(target);
+  goog.object.extend(clone, var_args);
+  return clone;
+};
 /* custom event management */
 var et = new goog.events.EventTarget;
 
@@ -40,13 +47,7 @@ sim.siftr.getTumblrData = function  getTumblrData(tumblog, sourceList, start) {
       ourTumblr.paintStart = start;
     }
     
-    et.dispatchEvent({type: "JSONP_LOADED",
-                      "tumblog"    : ourTumblr["tumblog"],
-                      "sourceList" : ourTumblr.sourceList,
-                      "tumblrObj"  : ourTumblr.tumblrObj,
-                      "postCount"  : ourTumblr.postCount,
-                      "lastStart"  : ourTumblr.lastStart,
-                      "paintStart" : ourTumblr.lastStart});
+    et.dispatchEvent(sim.extend(ourTumblr, {type: "JSONP_LOADED"}));
   }
   
   var tumblrEndpoint = "http://"+tumblog+".tumblr.com/api/read/json";
