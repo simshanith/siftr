@@ -3,7 +3,7 @@ goog.provide('sim.siftr');
 
 goog.require('goog.net.Jsonp');
 goog.require('goog.dom');
-goog.require('goog.dom.query');
+goog.require('goog.dom.forms');
 goog.require('goog.array');
 goog.require('goog.object');
 goog.require('goog.events');

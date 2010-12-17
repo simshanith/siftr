@@ -1,17 +1,20 @@
 /* shorthand functions */
 var $ = goog.dom;
-var $$ = function(selector) {return $.query(selector, goog.global.document);}
-
+var $$ = function(selector) {return goog.global.document.querySelectorAll(selector);}
+var $$1 = function(selector) {return goog.global.document.querySelector(selector);}
 /*utility: custom extend that returns object*/
 sim.extend = function extend(target, var_args) {
-  var clone = goog.object.clone(target);
-  goog.object.extend(clone, var_args);
-  return clone;
-};
+                                                var clone = goog.object.clone(target);
+                                                goog.object.extend(clone, var_args);
+                                                return clone;
+                                                };
 /* custom event management */
 var et = new goog.events.EventTarget;
 
 tumblrData = [];
+
+var dlg = new goog.fx.DragListGroup();
+
 
 sim.siftr.findTumblrData = function findTumblrData(tumblogName) {
   var ourTumblog;
@@ -69,7 +72,7 @@ et.addEventListener("MORE_POSTS", function(e) {
    with given tumblog and sourcelist
    enclosed in DOM classes and ids */
 sim.siftr.addPhotoFrom = function addPhotoFrom(tumblog, sourceList) {
-  var container = $$("#natural")[0];
+  var container = $$1("#natural");
   
   /* goog.array.forEach() iterating function */
   return function(ele, i, arr) {
@@ -127,10 +130,8 @@ et.addEventListener("JSONP_LOADED", function(e){
                     "postCount" : e.postCount});
 });
 
-/* our DragListGroup variable */
-var dlg;
-
 sim.siftr.updateDlg = function updateDlg(){
+  dlg.dispose();
   dlg = new goog.fx.DragListGroup();
   listContainers = $$(".list-container");
   goog.array.forEach(listContainers, function(ele, i, arr) {

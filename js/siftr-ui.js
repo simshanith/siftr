@@ -1,9 +1,6 @@
-/*TODO: switch to HTML5 label input */
-var labeledInput = new goog.ui.LabelInput();
-labeledInput.decorate($$("#switchTumblr")[0]);
-
 sim.siftr.switchTumblr = function switchTumblr(e) {
-  input = labeledInput.getValue();
+  e.preventDefault();
+  input = $.forms.getValue($$1("#tumblrSwitch"));
   var iTumblr = (input == "")? "simloovoo":input;
   var findTumblr = goog.array.find(tumblrData, function(ele) {return ele.tumblog == iTumblr});
   goog.array.forEach($$(".activeList"), $.removeNode);
@@ -11,13 +8,8 @@ sim.siftr.switchTumblr = function switchTumblr(e) {
             if(findTumblr == null) {
               sim.siftr.getTumblrData(iTumblr, "activeList", 0);
             }else{
-              et.dispatchEvent({type: "JSONP_LOADED",
-                                "tumblog"    : findTumblr.tumblog,
-                                "sourceList" : findTumblr.sourceList,
-                                "postCount"  : findTumblr.postCount,
-                                "tumblrObj"  : findTumblr.tumblrObj,
-                                "lastStart"  : findTumblr.lastStart,
-                                "paintStart" : 0});}
+              et.dispatchEvent(sim.extend(findTumblr, {type : "JSONP_LOADED",
+                                                       paintStart : 0}));}
 };
 
-goog.events.listen($$("#tumblrSwitch")[0], goog.events.EventType.CLICK, sim.siftr.switchTumblr);
+goog.events.listen($$1("#switchTumblr"), goog.events.EventType.SUBMIT, sim.siftr.switchTumblr);
