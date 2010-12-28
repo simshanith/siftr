@@ -13,3 +13,4 @@ sim.siftr.switchTumblr = function switchTumblr(e) {
 };
 
 goog.events.listen($$1("#switchTumblr"), goog.events.EventType.SUBMIT, sim.siftr.switchTumblr);
+

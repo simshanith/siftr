@@ -4,10 +4,10 @@ var $$ = function(selector) {return goog.global.document.querySelectorAll(select
 var $$1 = function(selector) {return goog.global.document.querySelector(selector);}
 /*utility: custom extend that returns object*/
 sim.extend = function extend(target, var_args) {
-                                                var clone = goog.object.clone(target);
-                                                goog.object.extend(clone, var_args);
-                                                return clone;
-                                                };
+  var clone = goog.object.clone(target);
+  goog.object.extend(clone, var_args);
+  return clone;
+};
 /* custom event management */
 var et = new goog.events.EventTarget;
 
@@ -28,9 +28,6 @@ sim.siftr.findTumblrData = function findTumblrData(tumblogName) {
 /* gets tumblr data and handles it */
 sim.siftr.getTumblrData = function  getTumblrData(tumblog, sourceList, start) {
   
-  /* called on successful JSONP request.
-     adds response to tumblrData data structure &
-     dispatches JSONP_LOADED event */
   function handleTumblr_(reply) {
     var ourTumblr = sim.siftr.findTumblrData(tumblog);
 
@@ -74,24 +71,13 @@ et.addEventListener("MORE_POSTS", function(e) {
 sim.siftr.addPhotoFrom = function addPhotoFrom(tumblog, sourceList) {
   var container = $$1("#natural");
   
-  /* goog.array.forEach() iterating function */
   return function(ele, i, arr) {
    
-    /* if there are multiple photos in a post, we need to iterate
-       over those too. They will be in an array attached to the
-       photos property. */
     if(ele.photos.length)
       goog.array.forEach(ele.photos, photoDom);
-    
-    /*else we just thread on through photoDom */
     else photoDom(ele, i, arr);
     
-    /* inner function actually handles DOM manipulation */
     function photoDom(elem, j, arr2) {
-      
-      /* multiPhotoSlug is appended to the id of the list
-         element. the object of a multiple-photo post photo has an
-         offset property; single-photo posts don't. */
       var multiPhotoSlug = (elem.offset) ? elem.offset : "";
       
       $.appendChild(container,
@@ -115,19 +101,11 @@ et.addEventListener("JSONP_LOADED", function(e){
   goog.array.forEach(goog.array.slice(e.tumblrObj.posts, e.paintStart),
                      sim.siftr.addPhotoFrom(e.tumblog, e.sourceList));
   
-  if(e.postCount - 50 > e.lastStart) {
-    et.dispatchEvent({type : "MORE_POSTS",
-                      "tumblog"    : e.tumblog,
-                      "sourceList" : e.sourceList,
-                      "lastStart"  : e.lastStart});
-  }
+  if(e.postCount - 50 > e.lastStart) 
+    et.dispatchEvent(sim.extend(e, {type: "MORE_POSTS"}));
   
-  et.dispatchEvent({type: "PHOTOS_LOADED",
-                    "tumblog"   : e.tumblog,
-                    "souceList" : e.sourceList,
-                    "tumblrObj" : e.tumblrObj,
-                    "lastStart" : e.lastStart,
-                    "postCount" : e.postCount});
+  
+  et.dispatchEvent(sim.extend(e, {type: "PHOTOS_LOADED"}));
 });
 
 sim.siftr.updateDlg = function updateDlg(){
