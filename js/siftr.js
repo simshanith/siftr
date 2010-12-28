@@ -119,6 +119,34 @@ sim.siftr.updateDlg = function updateDlg(){
   
   dlg.setDraggerElClass("dragging");
   dlg.init();
+
+  function _handleDlgEvent(e) {
+    var dragId = e.currDragItem.id;
+    var viewChange = e.currDragItem.parentElement.id == "category1";
+
+    function _addImage(listItem) {
+      var clone = listItem.cloneNode(true);
+      clone.id = "view" + listItem.id;
+      $.appendChild($$1("#view"), clone);
+    }
+
+    if(e.type=="dragend") {
+      console.log(e);
+      $.removeNode($$1("#view > li"));
+      var firstChild = $$1("#category1 > li:first-child");
+      if(firstChild)
+        _addImage(firstChild);
+    }
+    
+    if(viewChange && e.type == "beforedragstart") {
+      //remove image from viewport
+      $.removeNode($$1("#view > li"));
+    }
+  }
+  
+  goog.events.listen(dlg, goog.fx.DragListGroup.EventType.BEFOREDRAGSTART, _handleDlgEvent);
+  goog.events.listen(dlg, goog.fx.DragListGroup.EventType.DRAGEND, _handleDlgEvent);
+
 };
 
 /* after a batch of photos is loaded into the DOM,

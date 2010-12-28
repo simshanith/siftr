@@ -45,7 +45,7 @@ position: absolute; top: 0; left: 0;}
 .list-container.category > ul {
 width: 675px;
 min-height: 75px;
-margin: 20px auto 0;}
+margin: 20px 20px 0;}
 
 #categories {min-width: 715px;}
 #viewport {min-width: 715px; min-height: 460px;}
