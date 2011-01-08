@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<!DOCTYPE HTML>
+<html lang="en" manifest="../cache.manifest">
 <head>
   <meta charset="utf-8" />
   <title>simThinker</title>
+<<<<<<< HEAD:index.html
   <link rel="stylesheet" type="text/css" href="css/reset.css" />
   <link rel="stylesheet" type="text/css" href="css/siftr.css" />
   <!--( for online leeching off of google's servers ;)   -->
@@ -17,42 +16,36 @@
   -->
   <script src="js/requirements.js"></script>
   <script src="js/siftr.js"></script>
+=======
+  <link rel="stylesheet" href="../css/reset.css" />
+  <link rel="stylesheet" href="../css/siftr.css" />
+  <!--( for online leeching off of google's servers ;)
+  <script src="http://closure-library.googlecode.com/svn/trunk/closure/goog/base.js"></script>
+  -->
+  <!-- for local testing -->
+  <script src="../js/closure-library/closure/goog/base.js"></script>
+
+  <script src="../js/requirements.js"></script>
+  <script src="../js/siftr.js"></script>
+>>>>>>> master:html/siftr.html
 </head>
 <body>
-  <div class="headings">
-    <h1>simSiftr</h1>
-    <h2>play with your photos</h2>
-  </div>
+  <header>
+    <hgroup>
+      <h1>simSiftr</h1>
+      <h2>play with your photos</h2>
+    </hgroup>
+  </header>
   <div id="app-container">
     <div id="sourceControls">
       <ul class="sourceList" id="activeList">
-        <li><input type="text"
-                   name="switchTumblr" id="switchTumblr"
-                   label="&lt;blogname&gt;"/>.tumblr.com
-          <button id="tumblrSwitch">load photos</button></li>
-        <script type="text/javascript">
-          var labeledInput = new goog.ui.LabelInput();
-          labeledInput.decorate($$("#switchTumblr")[0]);
-          sim.siftr.switchTumblr = function switchTumblr(e) {
-            input = labeledInput.getValue();
-            var iTumblr = (input == "")? "simloovoo":input;
-            var findTumblr = goog.array.find(tumblrData, function(ele) {return ele.tumblog == iTumblr});
-            goog.array.forEach($$(".activeList"), $.removeNode);
-            
-            if(findTumblr == null) {
-              sim.siftr.getTumblrData(iTumblr, "activeList", 0);
-            }else{
-              et.dispatchEvent({type: "JSONP_LOADED",
-                                "tumblog"    : findTumblr.tumblog,
-                                "sourceList" : findTumblr.sourceList,
-                                "postCount"  : findTumblr.postCount,
-                                "tumblrObj"  : findTumblr.tumblrObj,
-                                "lastStart"  : findTumblr.lastStart,
-                                "paintStart" : 0});}
-          };
-
-          goog.events.listen($$("#tumblrSwitch")[0], goog.events.EventType.CLICK, sim.siftr.switchTumblr);
-        </script>
+        <li><form id="switchTumblr">
+          <input type="text"
+                 name="tumblrSwitch" id="tumblrSwitch"
+                   placeholder="&lt;blogname&gt;"/>.tumblr.com
+          <input type="submit" value="load photos"
+                 class="goog-custom-button" /></form></li>
+        <script src="../js/siftr-ui.js"></script>
         <!-- this should be added programmatically
         <li><a href="#activeList:simloovoo" id="activeList:simloovoo">simloovoo</a></li>
         -->
