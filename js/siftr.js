@@ -37,7 +37,8 @@ sim.siftr.getTumblrData = function  getTumblrData(tumblog, sourceList, start) {
                    "tumblrObj"  : reply,
                    "postCount"  : reply["posts-total"],
                    "lastStart"  : start,
-                   "paintStart" : start};
+                   "paintStart" : start,
+                   "linkedTumblrs" : new goog.structs.StringSet()};
       tumblrData.push(ourTumblr);
     } else {
       goog.array.extend(ourTumblr.tumblrObj.posts, reply.posts);
@@ -65,14 +66,33 @@ et.addEventListener("MORE_POSTS", function(e) {
   sim.siftr.getTumblrData(e.tumblog, e.sourceList, e.lastStart + 50);
 });
 
+/*logic taken from tmv.proto.jp and refactored */
+sim.siftr.getLinkedTumblrs = function getLinkedTumblrs(s) {
+  // simple regex against photo caption 
+  var matches = s.match(/http:\/\/[\w|-]+\.tumblr\.com/g);
+  if (!matches)
+    return [];
+  
+  // gets subdomain which is our tumblog name
+  function getNameFromUri(uri) {
+    return uri.replace(/http:\/\//g, "").replace(/.tumblr\.com/g, "").replace(/media|data|www/g, "");
+  }
+  return goog.array.map(matches, getNameFromUri);
+};
+
 /* returns function to be used in a goog.array.forEach loop
    with given tumblog and sourcelist
    enclosed in DOM classes and ids */
 sim.siftr.addPhotoFrom = function addPhotoFrom(tumblog, sourceList) {
   var container = $$1("#natural");
-  
+  var ourTumblr = sim.siftr.findTumblrData(tumblog);
+
   return function(ele, i, arr) {
-   
+
+    if(ele["photo-caption"]) {
+      ourTumblr.linkedTumblrs.addArray(sim.siftr.getLinkedTumblrs(ele["photo-caption"]));
+    }
+
     if(ele.photos.length)
       goog.array.forEach(ele.photos, photoDom);
     else photoDom(ele, i, arr);
