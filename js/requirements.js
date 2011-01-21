@@ -6,6 +6,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.forms');
 goog.require('goog.array');
 goog.require('goog.object');
+goog.require('goog.structs.StringSet');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
