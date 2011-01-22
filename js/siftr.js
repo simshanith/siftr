@@ -38,7 +38,9 @@ sim.siftr.getTumblrData = function  getTumblrData(tumblog, sourceList, start) {
                    "postCount"  : reply["posts-total"],
                    "lastStart"  : start,
                    "paintStart" : start,
-                   "linkedTumblrs" : new goog.structs.StringSet()};
+                   "linkedTumblrSet" : new goog.structs.StringSet(),
+                   "linkedTumblrData" : {},
+                  };
       tumblrData.push(ourTumblr);
     } else {
       goog.array.extend(ourTumblr.tumblrObj.posts, reply.posts);
@@ -66,18 +68,16 @@ et.addEventListener("MORE_POSTS", function(e) {
   sim.siftr.getTumblrData(e.tumblog, e.sourceList, e.lastStart + 50);
 });
 
-/*logic taken from tmv.proto.jp and refactored */
-sim.siftr.getLinkedTumblrs = function getLinkedTumblrs(s) {
-  // simple regex against photo caption 
-  var matches = s.match(/http:\/\/[\w|-]+\.tumblr\.com/g);
-  if (!matches)
-    return [];
-  
-  // gets subdomain which is our tumblog name
-  function getNameFromUri(uri) {
-    return uri.replace(/http:\/\//g, "").replace(/.tumblr\.com/g, "").replace(/media|data|www/g, "");
+sim.siftr.countLinkedTumblrs = function countLinkedTumblrs(arr) {
+  var result = {};     
+  function accumulate(ele, i, arr) {
+    if(result.hasOwnProperty(ele)) 
+      result[ele]++;
+    else 
+      result[ele] = 1;  
   }
-  return goog.array.map(matches, getNameFromUri);
+  goog.array.forEach(arr, accumulate);
+  return result;
 };
 
 /* returns function to be used in a goog.array.forEach loop
@@ -88,9 +88,45 @@ sim.siftr.addPhotoFrom = function addPhotoFrom(tumblog, sourceList) {
   var ourTumblr = sim.siftr.findTumblrData(tumblog);
 
   return function(ele, i, arr) {
+    
+    function mergeLinkedTumblrs(o) {
+      var linkedObj = ourTumblr.linkedTumblrData;
+      
+      function extendAdd(value, key, obj) {
+        if(obj[key] && linkedObj[key])
+          linkedObj[key] += obj[key];
+        else if (obj[key])
+          linkedObj[key] = obj[key]
+      }
+      goog.object.forEach(o, extendAdd);
+    };
+    
+
+    /*logic taken from tmv.proto.jp and refactored */
+    function getLinkedTumblrs(s) {
+      // simple regex against photo caption 
+      var matches = s.match(/http:\/\/[\w|-]+\.tumblr\.com/g);
+      var tumblrs;
+      if (!matches)
+        return [];
+      
+      // gets subdomain which is our tumblog name
+      function getNameFromUri(uri) {
+        return  uri.replace(/http:\/\//g, "").replace(/.tumblr\.com/g, "").replace(/media|data|www/g, "");
+      }
+      tumblrs = goog.array.map(matches, getNameFromUri)
+
+      return tumblrs;
+    };
 
     if(ele["photo-caption"]) {
-      ourTumblr.linkedTumblrs.addArray(sim.siftr.getLinkedTumblrs(ele["photo-caption"]));
+      var ourLinks = getLinkedTumblrs(ele["photo-caption"]);
+
+      ourTumblr.linkedTumblrSet.addArray(ourLinks);
+
+      var ourCountedLinks = sim.siftr.countLinkedTumblrs(ourLinks);
+
+      mergeLinkedTumblrs(ourCountedLinks);
     }
 
     if(ele.photos.length)
