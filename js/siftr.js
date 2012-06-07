@@ -182,5 +182,7 @@ sim.siftr.updateDlg = function updateDlg(){
 et.addEventListener("PHOTOS_LOADED", sim.siftr.updateDlg);
 
 
-/* start it all off with my tumblr */
-sim.siftr.getTumblrData("simloovoo", "activeList", 0);
+/* start it all off with query data tumblr or my tumblr*/
+goog.tweak.registerString('tumblr', 'Sets which tumblr to use as source', 'simloovoo', {restartRequired: true});
+
+sim.siftr.getTumblrData(goog.tweak.getString('tumblr'), "activeList", 0);

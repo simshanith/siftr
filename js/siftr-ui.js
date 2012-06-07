@@ -1,3 +1,6 @@
+var tweakRegistry = goog.tweak.getRegistry();
+var tumblrTweak = tweakRegistry.getStringSetting('tumblr');
+
 sim.siftr.switchTumblr = function switchTumblr(e) {
   e.preventDefault();
   input = $.forms.getValue($$1("#tumblrSwitch"));
@@ -5,12 +8,13 @@ sim.siftr.switchTumblr = function switchTumblr(e) {
   var findTumblr = goog.array.find(tumblrData, function(ele) {return ele.tumblog == iTumblr});
   goog.array.forEach($$(".activeList"), $.removeNode);
   
-            if(findTumblr == null) {
-              sim.siftr.getTumblrData(iTumblr, "activeList", 0);
-            }else{
-              et.dispatchEvent(sim.extend(findTumblr, {type : "JSONP_LOADED",
-                                                       paintStart : 0}));}
+  if(findTumblr == null) {
+    sim.siftr.getTumblrData(iTumblr, "activeList", 0);
+  }else{
+    et.dispatchEvent(sim.extend(findTumblr, {type : "JSONP_LOADED",
+                                             paintStart : 0}));}
+
+  tumblrTweak.setValue(iTumblr);
 };
 
 goog.events.listen($$1("#switchTumblr"), goog.events.EventType.SUBMIT, sim.siftr.switchTumblr);
-

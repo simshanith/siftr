@@ -12,3 +12,5 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.fx.DragListGroup');
 goog.require('goog.fx.DragListDirection');
+
+goog.require('goog.tweak');

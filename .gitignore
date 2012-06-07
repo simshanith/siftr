@@ -5,3 +5,6 @@
 #don't include emacs backups or other version view files
 */#*#
 */*~
+#don't include Sublime Text 2 project files
+*.sublime-project
+*.sublime-workspace

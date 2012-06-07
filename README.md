@@ -1,9 +1,8 @@
 # siftr
 
-siftr is a simple webapp that takes tumblr<sup>1</sup> photos and
-gives them a shiny drag & drop interface.
+siftr is a simple webapp that takes tumblr photos and
+gives them a simple drag & drop interface.
 
-* 1
-  * http://tumblr.com photos 
+enter the desired tumblog in the form or url "?tumblr=****" query parameter
 
-&copy; Copyright Shane Daniel 2010.  Please drop me a line at simrpgman@gmail.com
+&copy; Copyright Shane Daniel 2010-2012.  Please drop me a line at simrpgman@gmail.com
